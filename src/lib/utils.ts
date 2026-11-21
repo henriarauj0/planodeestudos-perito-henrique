@@ -65,9 +65,23 @@ export function accuracyTone(v: number | null): 'none' | 'bad' | 'mid' | 'good' 
   return 'good';
 }
 
+/** Indicador discreto: borda 1px na cor funcional, texto claro. */
 export const ACCURACY_CLASSES: Record<ReturnType<typeof accuracyTone>, string> = {
-  none: 'text-slate-500 bg-slate-800/60 ring-slate-700',
-  bad: 'text-rose-300 bg-rose-500/10 ring-rose-500/30',
-  mid: 'text-yellow-200 bg-yellow-500/10 ring-yellow-500/30',
-  good: 'text-emerald-300 bg-emerald-500/10 ring-emerald-500/30',
+  none: 'text-ink-faint border-line',
+  bad: 'text-ink border-bad',
+  mid: 'text-ink border-warn',
+  good: 'text-ink border-ok',
 };
+
+/** Marcador quadrado preenchido com a cor funcional. */
+export const ACCURACY_DOT: Record<ReturnType<typeof accuracyTone>, string> = {
+  none: 'bg-line-strong',
+  bad: 'bg-bad',
+  mid: 'bg-warn',
+  good: 'bg-ok',
+};
+
+/** Zero à esquerda para etiquetas: 2 -> "02". */
+export function pad2(n: number) {
+  return String(n).padStart(2, '0');
+}

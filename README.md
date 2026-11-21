@@ -15,6 +15,28 @@ Pré-requisito: Node.js 18 ou superior (https://nodejs.org).
 
 Para gerar uma versão estática, rode `npm run build`. O resultado fica em `dist/`. Para conferir essa versão, rode `npm run preview`. Como o build usa caminhos relativos, a pasta `dist/` pode ser publicada no GitHub Pages, no Netlify ou em qualquer hospedagem estática.
 
+## Publicação privada no Vercel
+
+O arquivo `middleware.ts` faz o servidor do Vercel exigir usuário e senha (HTTP Basic Auth) antes de entregar qualquer arquivo do app. Sem as variáveis de ambiente configuradas, o acesso é negado a todos. O `vercel.json` adiciona cabeçalhos `noindex`, para que o site não seja indexado por buscadores.
+
+Caminho A, pela linha de comando no seu computador:
+
+1. Rode `npm install`.
+2. Rode `npx vercel login` e entre com a sua conta.
+3. Rode `npx vercel link` e aceite criar um projeto novo.
+4. Rode `npx vercel env add BASIC_AUTH_USER production` e informe o usuário.
+5. Rode `npx vercel env add BASIC_AUTH_PASSWORD production` e informe uma senha forte, com 16 caracteres ou mais.
+6. Rode `npx vercel deploy --prod`.
+7. Abra a URL `https://<projeto>.vercel.app` exibida no final. O navegador pedirá o usuário e a senha.
+
+Caminho B, pelo painel do Vercel, depois de enviar o código ao GitHub:
+
+1. Em vercel.com/new, importe o repositório. O preset Vite é detectado sozinho.
+2. Antes de publicar, abra Environment Variables e crie `BASIC_AUTH_USER` e `BASIC_AUTH_PASSWORD`.
+3. Clique em Deploy.
+
+Atenção: as métricas continuam salvas no LocalStorage de cada navegador. O Vercel só hospeda o app. Para levar os dados a outro aparelho, use Exportar e Importar (.json).
+
 ## Estrutura
 
 | Caminho | Conteúdo |
@@ -24,6 +46,8 @@ Para gerar uma versão estática, rode `npm run build`. O resultado fica em `dis
 | `src/hooks/useStudyStore.tsx` | Estado global, persistência em LocalStorage, backup e restauração |
 | `src/hooks/useActiveTimer.ts` | Cronômetro e Pomodoro. O estado é persistido, então um recarregamento da página não perde a sessão |
 | `src/lib/metrics.ts` | Progresso ponderado, taxas de acerto, projeção de nota e pontuação de simulados |
+| `middleware.ts` | Bloqueio de acesso por usuário e senha no Vercel |
+| `src/components/ui/LegalText.tsx` | Destaque em fonte monoespaçada de artigos, leis e normas |
 | `src/lib/dates.ts` | Semanas do plano e horas previstas até a data |
 | `src/components/ui/*` | Componentes base no estilo shadcn/ui |
 | `src/components/dashboard/*` | Cabeçalho, contagem regressiva, KPIs e backup |

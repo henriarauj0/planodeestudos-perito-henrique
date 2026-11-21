@@ -23,6 +23,10 @@ export interface Discipline {
   weight: number;
   /** true quando a divisão de questões é estimativa (o edital não a fixa). */
   estimated?: boolean;
+  /** Prioridade no plano, conforme o perfil do aluno. */
+  priority: 'alta' | 'media' | 'baixa' | 'revisao';
+  /** Código curto exibido em etiqueta (ex.: "ÁREA 04 · TI"). */
+  tag: string;
   topics: Topic[];
 }
 

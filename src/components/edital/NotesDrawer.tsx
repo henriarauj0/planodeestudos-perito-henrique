@@ -59,14 +59,14 @@ export function NotesDrawer({ topic, onClose }: Props) {
       onClose={close}
       title={
         <span className="flex items-center gap-2">
-          <NotebookPen className="h-4 w-4 text-cyan-300" /> Notas e caderno de erros
+          <NotebookPen className="h-4 w-4 text-ink" /> Notas e caderno de erros
         </span>
       }
       description={
         topic && (
           <>
-            <span className="text-slate-300">{topic.title}</span>
-            <span className="mt-0.5 block text-slate-500">
+            <span className="text-ink-muted">{topic.title}</span>
+            <span className="mt-0.5 block text-ink-dim">
               {topic.disciplineName}
               {topic.ref && ` · ${topic.ref} do Anexo III`}
             </span>
@@ -75,7 +75,7 @@ export function NotesDrawer({ topic, onClose }: Props) {
       }
       footer={
         <>
-          <span className="mr-auto self-center text-[11px] text-slate-500">{dirty ? 'Alterações não salvas (salvas ao fechar)' : 'Tudo salvo'}</span>
+          <span className="mr-auto self-center text-[11px] text-ink-dim">{dirty ? 'Alterações não salvas (salvas ao fechar)' : 'Tudo salvo'}</span>
           <Button variant="ghost" onClick={close}>
             Fechar
           </Button>
@@ -101,7 +101,7 @@ export function NotesDrawer({ topic, onClose }: Props) {
         </div>
         <div>
           <Label htmlFor="n-err" className="flex items-center gap-1.5">
-            <XCircle className="h-3.5 w-3.5 text-rose-300" /> Caderno de erros
+            <XCircle className="h-3.5 w-3.5" /> Caderno de erros
           </Label>
           <Textarea
             id="n-err"
@@ -132,7 +132,7 @@ export function NotesDrawer({ topic, onClose }: Props) {
                       href={l.url!}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex max-w-full items-center gap-1.5 truncate text-xs text-cyan-300 hover:underline"
+                      className="inline-flex max-w-full items-center gap-1.5 truncate text-xs text-ink hover:underline"
                     >
                       <ExternalLink className="h-3 w-3 shrink-0" />
                       <span className="truncate">{l.label}</span>

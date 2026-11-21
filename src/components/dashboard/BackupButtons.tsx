@@ -82,14 +82,14 @@ export function BackupButtons() {
           </>
         }
       >
-        <div className="space-y-2 text-sm text-slate-300">
+        <div className="space-y-2 text-sm text-ink-muted">
           <p>
-            <span className="text-slate-500">Arquivo:</span> {pending && summary(pending)}
+            <span className="text-ink-dim">Arquivo:</span> {pending && summary(pending)}
           </p>
           <p>
-            <span className="text-slate-500">Atual:</span> {summary(state)}
+            <span className="text-ink-dim">Atual:</span> {summary(state)}
           </p>
-          <p className="text-xs text-slate-500">Dica: exporte um backup do estado atual antes, se quiser preservá-lo.</p>
+          <p className="text-xs text-ink-dim">Dica: exporte um backup do estado atual antes, se quiser preservá-lo.</p>
         </div>
       </Modal>
 
@@ -119,7 +119,7 @@ export function BackupButtons() {
           </>
         }
       >
-        <p className="text-sm text-slate-300">Esta ação não pode ser desfeita sem um backup.</p>
+        <p className="text-sm text-ink-muted">Esta ação não pode ser desfeita sem um backup.</p>
       </Modal>
     </>
   );

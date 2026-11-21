@@ -10,9 +10,11 @@
     font-feature-settings: 'cv11', 'ss01';
   }
   body {
-    @apply bg-slate-950 text-slate-200;
+    @apply bg-canvas text-ink;
   }
-  /* inputs numéricos sem setas */
+  ::selection {
+    @apply bg-ink text-canvas;
+  }
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -22,19 +24,29 @@
     -moz-appearance: textfield;
   }
   input[type='date']::-webkit-calendar-picker-indicator {
-    filter: invert(0.7);
+    filter: invert(0.65);
   }
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
   ::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-slate-800;
+    background: #27272a;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background: transparent;
   }
   select option {
-    @apply bg-slate-900;
+    background: #121214;
+  }
+}
+
+@layer components {
+  /* Rótulo de seção estilo dossiê */
+  .label-caps {
+    @apply font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink-dim;
+  }
+  .num {
+    @apply font-mono tabular-nums;
   }
 }

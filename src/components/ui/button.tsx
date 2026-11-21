@@ -5,11 +5,11 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger';
 type Size = 'sm' | 'md' | 'lg' | 'icon';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-sm shadow-cyan-500/20',
-  secondary: 'bg-slate-800 text-slate-100 hover:bg-slate-700 ring-1 ring-inset ring-slate-700',
-  ghost: 'text-slate-300 hover:bg-slate-800 hover:text-slate-100',
-  outline: 'ring-1 ring-inset ring-slate-700 text-slate-200 hover:bg-slate-800/70',
-  danger: 'bg-rose-500/90 text-white hover:bg-rose-500',
+  primary: 'bg-white text-canvas hover:bg-zinc-200 border border-white',
+  secondary: 'bg-surface-2 text-ink border border-line hover:border-line-strong hover:bg-surface-3',
+  ghost: 'text-ink-muted border border-transparent hover:bg-surface-2 hover:text-ink',
+  outline: 'border border-line text-ink hover:border-line-strong hover:bg-surface-2',
+  danger: 'bg-bad text-white border border-bad hover:bg-red-700',
 };
 
 const sizes: Record<Size, string> = {
@@ -33,9 +33,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-lg font-medium transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
-        'disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex shrink-0 items-center justify-center rounded-md font-medium transition-colors',
+        'focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white',
+        'disabled:pointer-events-none disabled:opacity-40',
         variants[variant],
         sizes[size],
         className,

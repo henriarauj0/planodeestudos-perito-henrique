@@ -25,20 +25,20 @@ export function DiscursivaChecklist() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <PenSquare className="h-4 w-4 text-violet-300" /> Discursiva – temas de Informática Forense
+          <PenSquare className="h-4 w-4 text-ink-muted" /> Discursiva – temas de Informática Forense
         </CardTitle>
         <CardDescription>
           Redação sobre conhecimentos específicos: 20 a 30 linhas, 0 a 40 pontos, mínimo 20 (subitens 11.1.1 a 11.1.3). Treine aos sábados e registre a nota.
         </CardDescription>
         <div className="mt-2 flex items-center gap-3">
-          <Progress value={(done / themes.length) * 100} barClassName="bg-violet-400" label="Temas treinados" />
-          <span className="shrink-0 text-xs tabular-nums text-slate-300">
+          <Progress value={(done / themes.length) * 100} barClassName="bg-ink" label="Temas treinados" />
+          <span className="shrink-0 text-xs font-mono tabular-nums text-ink-muted">
             {done}/{themes.length} temas · {trainings} treinos
           </span>
         </div>
       </CardHeader>
       <CardContent className="space-y-1">
-        <ul className="divide-y divide-slate-800/70">
+        <ul className="divide-y divide-line">
           {themes.map((t) => {
             const p = state.discursivas[t.id];
             const isScoring = scoring === t.id;
@@ -51,18 +51,18 @@ export function DiscursivaChecklist() {
                     aria-label={`Marcar tema: ${t.title}`}
                     onClick={() => setDiscursiva(t.id, { done: !p?.done })}
                     className={cn(
-                      'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded ring-1 ring-inset transition-colors',
-                      p?.done ? 'bg-violet-400 text-slate-950 ring-transparent' : 'ring-slate-600 hover:ring-slate-400',
+                      'mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-sm border transition-colors',
+                      p?.done ? 'border-white bg-white text-canvas' : 'border-line-strong hover:border-ink-dim',
                     )}
                   >
                     {p?.done && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
                   </button>
                   <div className="min-w-0">
-                    <p className={cn('text-[13px] leading-snug', p?.done ? 'text-slate-400' : 'text-slate-200')}>{t.title}</p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className={cn('text-[13px] leading-snug', p?.done ? 'text-ink-muted' : 'text-ink')}>{t.title}</p>
+                    <p className="text-[11px] text-ink-dim">
                       {t.hint}
                       {p?.count ? (
-                        <span className="text-slate-400">
+                        <span className="text-ink-muted">
                           {t.hint ? ' · ' : ''}
                           {p.count} treino(s){p.lastDate && `, último em ${fmtDate(p.lastDate)}`}
                           {p.bestScore !== undefined && `, melhor nota ${fmtNum(p.bestScore)}/40`}

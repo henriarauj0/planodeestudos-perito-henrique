@@ -1,4 +1,3 @@
-import { AlertTriangle, CheckCircle2, Clock, Hourglass, Target, TrendingUp } from 'lucide-react';
 import { DISCIPLINES, EXAM_BLOCKS, OBJECTIVE_MAX, OBJECTIVE_MIN, PROFILE } from '../../data/editalData';
 import { useStudyStore } from '../../hooks/useStudyStore';
 import { useNow } from '../../hooks/useNow';
@@ -13,19 +12,19 @@ import {
   weightedProgress,
 } from '../../lib/metrics';
 import { TONE } from '../../lib/theme';
-import { cn, fmtHours, fmtNum, fmtPct } from '../../lib/utils';
-import { Card } from '../ui/card';
+import { ACCURACY_DOT, accuracyTone, cn, fmtHours, fmtNum, fmtPct } from '../../lib/utils';
+import { AccuracyChip } from '../ui/AccuracyChip';
 import { Progress } from '../ui/progress';
 
-function Kpi({ icon, title, children, className }: { icon: React.ReactNode; title: string; children: React.ReactNode; className?: string }) {
+function Kpi({ code, title, children, className }: { code: string; title: string; children: React.ReactNode; className?: string }) {
   return (
-    <Card className={cn('flex flex-col gap-3 p-4', className)}>
-      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-400">
-        {icon}
-        {title}
+    <div className={cn('flex flex-col gap-3 bg-surface p-4', className)}>
+      <div className="flex items-center justify-between">
+        <span className="label-caps">{title}</span>
+        <span className="font-mono text-[10px] text-ink-faint">{code}</span>
       </div>
       {children}
-    </Card>
+    </div>
   );
 }
 
@@ -47,38 +46,38 @@ function Countdown() {
   const started = dayOfPlan >= 1;
 
   const units = [
-    { v: days, l: 'dias' },
-    { v: hours, l: 'horas' },
-    { v: minutes, l: 'min' },
-    { v: seconds, l: 'seg' },
+    { v: days, l: 'Dias' },
+    { v: hours, l: 'Horas' },
+    { v: minutes, l: 'Min' },
+    { v: seconds, l: 'Seg' },
   ];
 
   return (
-    <Kpi icon={<Hourglass className="h-3.5 w-3.5 text-cyan-300" />} title="Contagem regressiva" className="relative overflow-hidden">
-      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan-500/10 blur-2xl" />
+    <Kpi code="K-01" title="Contagem regressiva">
       {diff === 0 ? (
-        <p className="text-2xl font-semibold text-cyan-300">Dia de prova. Boa sorte!</p>
+        <p className="text-xl font-semibold text-ink">Dia de prova.</p>
       ) : (
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 divide-x divide-line border border-line">
           {units.map((u) => (
-            <div key={u.l} className="rounded-lg bg-slate-950/60 px-1 py-2 text-center ring-1 ring-slate-800">
-              <div className="text-2xl font-semibold tabular-nums text-slate-50">{String(u.v).padStart(2, '0')}</div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-500">{u.l}</div>
+            <div key={u.l} className="px-1 py-2 text-center">
+              <div className="num text-2xl font-medium text-ink">{String(u.v).padStart(2, '0')}</div>
+              <div className="label-caps mt-0.5 text-[9px]">{u.l}</div>
             </div>
           ))}
         </div>
       )}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-ink-muted">
         <span>
-          <span className="font-semibold text-slate-200">{fmtNum(weeks, 1)}</span> semanas restantes
+          <span className="num text-ink">{fmtNum(weeks, 1)}</span> semanas
         </span>
         <span>
           {started ? (
             <>
-              Dia <span className="font-semibold text-slate-200">{Math.min(dayOfPlan, planDays)}</span> de {planDays}
+              Dia <span className="num text-ink">{String(Math.min(dayOfPlan, planDays)).padStart(2, '0')}</span>
+              <span className="num">/{planDays}</span>
             </>
           ) : (
-            <>Plano começa em {start.toLocaleDateString('pt-BR')}</>
+            <>Início em {start.toLocaleDateString('pt-BR')}</>
           )}
         </span>
       </div>
@@ -105,13 +104,13 @@ export function KpiCards() {
   const proj = projectedObjective(stats);
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Indicadores">
+    <section className="grid gap-px overflow-hidden rounded-md border border-line bg-line sm:grid-cols-2 xl:grid-cols-4" aria-label="Indicadores">
       <Countdown />
 
-      <Kpi icon={<TrendingUp className="h-3.5 w-3.5 text-cyan-300" />} title="Progresso do edital">
-        <div className="flex items-end justify-between">
-          <span className="text-3xl font-semibold tabular-nums text-slate-50">{fmtPct(progress, 1)}</span>
-          <span className="pb-1 text-[11px] text-slate-500">ponderado por questões × peso</span>
+      <Kpi code="K-02" title="Progresso do edital">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="num text-3xl font-medium text-ink">{fmtPct(progress, 1)}</span>
+          <span className="label-caps text-[9px]">Ponderado q × peso</span>
         </div>
         <Progress value={progress} label="Progresso geral ponderado" />
         <div className="space-y-1.5">
@@ -119,75 +118,92 @@ export function KpiCards() {
             const v = weightedProgress(stats, b.id) * 100;
             return (
               <div key={b.id} className="flex items-center gap-2 text-xs">
-                <span className={cn('h-2 w-2 shrink-0 rounded-full', TONE[b.id].dot)} />
-                <span className="w-24 shrink-0 truncate text-slate-400">{b.name.replace('Conhecimentos ', '')}</span>
-                <Progress value={v} className="h-1" barClassName={TONE[b.id].bar} label={b.name} />
-                <span className="w-10 shrink-0 text-right tabular-nums text-slate-300">{fmtPct(v)}</span>
+                <span className="w-8 shrink-0 font-mono text-[10px] text-ink-dim">{TONE[b.id].code}</span>
+                <span className="w-20 shrink-0 truncate text-ink-muted">{b.name.replace('Conhecimentos ', '')}</span>
+                <Progress value={v} className="h-[3px]" barClassName={TONE[b.id].bar} label={b.name} />
+                <span className="num w-10 shrink-0 text-right text-ink-muted">{fmtPct(v)}</span>
               </div>
             );
           })}
         </div>
       </Kpi>
 
-      <Kpi icon={<Clock className="h-3.5 w-3.5 text-cyan-300" />} title="Horas líquidas">
-        <div className="flex items-end justify-between">
-          <span className="text-3xl font-semibold tabular-nums text-slate-50">
+      <Kpi code="K-03" title="Horas líquidas">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="num text-3xl font-medium text-ink">
             {fmtHours(minutes)}
-            <span className="text-base font-normal text-slate-500"> / {PROFILE.totalHoursGoal}h</span>
+            <span className="text-base text-ink-dim"> / {PROFILE.totalHoursGoal}h</span>
           </span>
-          <span className="pb-1 text-xs tabular-nums text-slate-400">{fmtPct((minutes / GOAL_MINUTES) * 100)}</span>
+          <span className="num text-xs text-ink-muted">{fmtPct((minutes / GOAL_MINUTES) * 100)}</span>
         </div>
         <Progress value={(minutes / GOAL_MINUTES) * 100} marker={(expected / GOAL_MINUTES) * 100} label="Horas estudadas sobre a meta" />
-        <p className="text-xs text-slate-400">
-          Esperado até hoje: <span className="text-slate-200">{fmtHours(expected)}</span>.{' '}
-          {expected === 0 ? (
-            <span>O plano ainda não começou.</span>
-          ) : delta >= 0 ? (
-            <span className="text-emerald-300">{fmtHours(delta)} à frente do plano</span>
-          ) : (
-            <span className="text-rose-300">{fmtHours(-delta)} atrás do plano</span>
-          )}
-        </p>
+        <dl className="grid grid-cols-2 gap-px border border-line bg-line text-xs">
+          <div className="bg-surface px-2 py-1.5">
+            <dt className="label-caps text-[9px]">Previsto até hoje</dt>
+            <dd className="num mt-0.5 text-ink">{fmtHours(expected)}</dd>
+          </div>
+          <div className="bg-surface px-2 py-1.5">
+            <dt className="label-caps text-[9px]">Saldo</dt>
+            <dd className="num mt-0.5 flex items-center gap-1.5 text-ink">
+              {expected === 0 ? (
+                '—'
+              ) : (
+                <>
+                  <span className={cn('h-1.5 w-1.5', delta >= 0 ? 'bg-ok' : 'bg-bad')} aria-hidden />
+                  {delta >= 0 ? '+' : '−'}
+                  {fmtHours(Math.abs(delta))}
+                </>
+              )}
+            </dd>
+          </div>
+        </dl>
       </Kpi>
 
-      <Kpi icon={<Target className="h-3.5 w-3.5 text-cyan-300" />} title="Taxa de acerto">
-        <div className="flex items-end justify-between">
-          <span className="text-3xl font-semibold tabular-nums text-slate-50">{fmtPct(acc.accuracy, 1)}</span>
-          <span className="pb-1 text-xs text-slate-400">
-            {acc.correct}/{acc.questions} questões
+      <Kpi code="K-04" title="Taxa de acerto">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="num text-3xl font-medium text-ink">{fmtPct(acc.accuracy, 1)}</span>
+          <span className="num text-xs text-ink-muted">
+            {acc.correct}/{acc.questions} q
           </span>
         </div>
-        <div className="flex gap-1.5">
+        <div className="grid grid-cols-3 gap-px border border-line bg-line">
           {EXAM_BLOCKS.map((b) => {
             const q = blockQuestionStats(stats, b.id);
             return (
-              <div key={b.id} className={cn('flex-1 rounded-md px-2 py-1 ring-1', TONE[b.id].soft, TONE[b.id].ring)}>
-                <div className="text-[10px] text-slate-400">{b.name.replace('Conhecimentos ', '')}</div>
-                <div className={cn('text-sm font-semibold tabular-nums', TONE[b.id].text)}>{fmtPct(q.accuracy)}</div>
+              <div key={b.id} className="bg-surface px-2 py-1.5">
+                <div className="font-mono text-[10px] text-ink-dim">{TONE[b.id].code}</div>
+                <div className="num mt-0.5 flex items-center gap-1.5 text-sm text-ink">
+                  <span className={cn('h-1.5 w-1.5', ACCURACY_DOT[accuracyTone(q.accuracy)])} aria-hidden />
+                  {fmtPct(q.accuracy)}
+                </div>
               </div>
             );
           })}
         </div>
         {below.length > 0 ? (
-          <div className="rounded-lg bg-rose-500/10 p-2 ring-1 ring-rose-500/30">
-            <p className="flex items-center gap-1.5 text-xs font-medium text-rose-200">
-              <AlertTriangle className="h-3.5 w-3.5" /> Abaixo de {threshold}% (meta de corte pessoal):
+          <div className="border border-bad bg-canvas p-2">
+            <p className="label-caps text-[9px] text-ink">
+              <span className="mr-1.5 inline-block h-1.5 w-1.5 bg-bad align-middle" aria-hidden />
+              Alerta · abaixo de {threshold}%
             </p>
-            <p className="mt-1 text-xs text-rose-200/80">
-              {below.map((d) => `${d.short} (${fmtPct(stats[d.id].accuracy)})`).join(' · ')}
-            </p>
+            <ul className="mt-1.5 space-y-1">
+              {below.map((d) => (
+                <li key={d.id} className="flex items-center justify-between gap-2 text-xs text-ink-muted">
+                  <span className="truncate">{d.short}</span>
+                  <AccuracyChip value={stats[d.id].accuracy} className="h-6" />
+                </li>
+              ))}
+            </ul>
           </div>
-        ) : acc.questions > 0 ? (
-          <p className="flex items-center gap-1.5 text-xs text-emerald-300">
-            <CheckCircle2 className="h-3.5 w-3.5" /> Todas as disciplinas com questões estão ≥ {threshold}%.
-          </p>
         ) : (
-          <p className="text-xs text-slate-500">Registre questões para ver o alerta por disciplina.</p>
+          <p className="text-xs text-ink-dim">
+            {acc.questions > 0 ? `Nenhuma disciplina abaixo de ${threshold}%.` : 'Registre questões para ativar o alerta por disciplina.'}
+          </p>
         )}
         {proj.scaled !== null && (
-          <p className="text-[11px] text-slate-500">
-            Projeção na objetiva: <span className="text-slate-300">{fmtNum(proj.scaled, 0)}/{OBJECTIVE_MAX}</span> (mínimo do edital: {OBJECTIVE_MIN})
-            {!proj.full && ' · baseada só nas disciplinas com questões'}
+          <p className="text-[11px] text-ink-dim">
+            Projeção objetiva: <span className="num text-ink-muted">{fmtNum(proj.scaled, 0)}/{OBJECTIVE_MAX}</span> · corte {OBJECTIVE_MIN}
+            {!proj.full && ' · parcial'}
           </p>
         )}
       </Kpi>

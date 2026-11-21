@@ -36,8 +36,6 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
   const ratio = isPomodoro ? Math.min(1, phaseMs / phaseLimit) : 0;
   const onBreak = isPomodoro && timer.phase === 'pausa';
 
-  const R = 88;
-  const C = 2 * Math.PI * R;
 
   return (
     <Modal
@@ -46,45 +44,41 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
       persistent
       title={
         <span className="flex items-center gap-2">
-          <Timer className="h-4 w-4 text-cyan-300" /> {timer.label}
+          <Timer className="h-4 w-4 text-ink-muted" /> {timer.label}
         </span>
       }
       description={isPomodoro ? `Pomodoro ${pomodoroFocus}/${pomodoroBreak} · ciclo ${timer.cycles + (timer.phase === 'foco' ? 1 : 0)}` : 'Cronômetro progressivo'}
     >
       {!finishing ? (
         <div className="flex flex-col items-center gap-5">
-          <div className="relative grid h-56 w-56 place-items-center">
-            <svg viewBox="0 0 200 200" className="absolute inset-0 -rotate-90" aria-hidden>
-              <circle cx="100" cy="100" r={R} className="fill-none stroke-slate-800" strokeWidth="6" />
-              {isPomodoro && (
-                <circle
-                  cx="100"
-                  cy="100"
-                  r={R}
-                  className={cn('fill-none transition-[stroke-dashoffset] duration-500', onBreak ? 'stroke-violet-400' : 'stroke-cyan-400')}
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  strokeDasharray={C}
-                  strokeDashoffset={C * (1 - ratio)}
-                />
-              )}
-              {!isPomodoro && timer.running && (
-                <circle cx="100" cy="100" r={R} className="fill-none stroke-cyan-400/60" strokeWidth="6" strokeDasharray="4 10" />
-              )}
-            </svg>
-            <div className="text-center">
-              <div className={cn('mb-1 text-[11px] font-medium uppercase tracking-widest', onBreak ? 'text-violet-300' : 'text-cyan-300')}>
-                {onBreak ? 'Pausa' : timer.running ? 'Foco' : 'Pausado'}
-              </div>
-              <div className="text-5xl font-semibold tabular-nums text-slate-50">{isPomodoro ? fmtClock(remaining) : fmtClock(net)}</div>
-              <div className="mt-1 text-xs text-slate-400">
-                Líquido: <span className="tabular-nums text-slate-200">{fmtClock(net)}</span>
+          <div className="w-full border border-line bg-canvas">
+            <div className="flex items-center justify-between border-b border-line px-3 py-1.5">
+              <span className="label-caps flex items-center gap-1.5 text-ink">
+                <span className={cn('h-1.5 w-1.5', timer.running ? (onBreak ? 'bg-ink-dim' : 'bg-ink') : 'bg-line-strong')} aria-hidden />
+                {onBreak ? 'Pausa' : timer.running ? 'Foco · em registro' : 'Pausado'}
+              </span>
+              <span className="font-mono text-[10px] text-ink-faint">{isPomodoro ? `T-${fmtClock(phaseLimit)}` : 'CRON'}</span>
+            </div>
+            <div className="px-3 py-6 text-center">
+              <div className="num text-6xl font-medium tracking-tight text-ink">{isPomodoro ? fmtClock(remaining) : fmtClock(net)}</div>
+              <div className="label-caps mt-2">
+                Tempo líquido <span className="num ml-1 text-[11px] tracking-normal text-ink">{fmtClock(net)}</span>
               </div>
             </div>
+            {isPomodoro && (
+              <div className="relative h-1.5 border-t border-line bg-surface">
+                <div className={cn('h-full transition-[width] duration-500', onBreak ? 'bg-ink-dim' : 'bg-ink')} style={{ width: `${ratio * 100}%` }} />
+                <div className="pointer-events-none absolute inset-0 flex justify-between" aria-hidden>
+                  {Array.from({ length: 11 }, (_, i) => (
+                    <span key={i} className="h-full w-px bg-canvas" />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {onBreak && (
-            <p className="flex items-center gap-1.5 text-xs text-violet-200">
+            <p className="flex items-center gap-1.5 text-xs text-ink-muted">
               <Coffee className="h-3.5 w-3.5" /> Intervalo não conta como tempo líquido.
             </p>
           )}
@@ -106,7 +100,7 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
             )}
             <Button
               size="lg"
-              className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+              variant="primary"
               onClick={() => {
                 if (timer.running) onPause();
                 setFinishing(true);
@@ -116,12 +110,12 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
             </Button>
           </div>
 
-          <div className="flex w-full items-center justify-between border-t border-slate-800 pt-3">
+          <div className="flex w-full items-center justify-between border-t border-line pt-3">
             <Button variant="ghost" size="sm" onClick={onMinimize}>
               <Minimize2 className="h-3.5 w-3.5" /> Minimizar
             </Button>
             {confirmDiscard ? (
-              <span className="flex items-center gap-2 text-xs text-slate-400">
+              <span className="flex items-center gap-2 text-xs text-ink-muted">
                 Descartar sem salvar?
                 <Button variant="danger" size="sm" onClick={onDiscard}>
                   Sim
@@ -131,7 +125,7 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
                 </Button>
               </span>
             ) : (
-              <Button variant="ghost" size="sm" className="text-slate-500 hover:text-rose-300" onClick={() => setConfirmDiscard(true)}>
+              <Button variant="ghost" size="sm" className="text-ink-dim" onClick={() => setConfirmDiscard(true)}>
                 <Trash2 className="h-3.5 w-3.5" /> Descartar
               </Button>
             )}
@@ -139,8 +133,8 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-slate-300">
-            Tempo líquido registrado: <span className="font-semibold tabular-nums text-cyan-300">{fmtClock(net)}</span>. Ajuste se necessário e informe as questões.
+          <p className="text-sm text-ink-muted">
+            Tempo líquido registrado: <span className="font-semibold font-mono tabular-nums text-ink">{fmtClock(net)}</span>. Ajuste se necessário e informe as questões.
           </p>
           <SessionForm
             blockId={timer.blockId}
@@ -160,23 +154,18 @@ export function StudyTimer({ open, timer, now, onMinimize, onPause, onResume, on
   );
 }
 
-/** Indicador flutuante quando o cronômetro está minimizado. */
+/** Indicador fixo quando o cronômetro está minimizado. */
 export function TimerPill({ timer, now, onOpen }: { timer: ActiveTimer; now: number; onOpen: () => void }) {
   const onBreak = timer.mode === 'pomodoro' && timer.phase === 'pausa';
   return (
     <button
       onClick={onOpen}
-      className={cn(
-        'fixed bottom-4 right-4 z-40 flex items-center gap-3 rounded-full border bg-slate-900/95 py-2 pl-3 pr-4 shadow-2xl backdrop-blur',
-        onBreak ? 'border-violet-500/40' : 'border-cyan-500/40',
-      )}
+      className="fixed bottom-4 right-4 z-40 flex items-center gap-3 rounded-md border border-line-strong bg-surface-2 py-2 pl-3 pr-4 hover:border-ink-dim"
     >
-      <span className="relative flex h-2.5 w-2.5">
-        {timer.running && <span className={cn('absolute inline-flex h-full w-full animate-ping rounded-full opacity-60', onBreak ? 'bg-violet-400' : 'bg-cyan-400')} />}
-        <span className={cn('relative inline-flex h-2.5 w-2.5 rounded-full', timer.running ? (onBreak ? 'bg-violet-400' : 'bg-cyan-400') : 'bg-slate-500')} />
-      </span>
-      <span className="max-w-[10rem] truncate text-xs text-slate-300">{timer.label}</span>
-      <span className="text-sm font-semibold tabular-nums text-slate-50">{fmtClock(netElapsed(timer, now))}</span>
+      <span className={cn('h-2 w-2', timer.running ? (onBreak ? 'bg-ink-dim' : 'bg-ink') : 'bg-line-strong')} aria-hidden />
+      <span className="label-caps hidden sm:inline">{onBreak ? 'Pausa' : timer.running ? 'Em registro' : 'Pausado'}</span>
+      <span className="max-w-[10rem] truncate text-xs text-ink-muted">{timer.label}</span>
+      <span className="num text-sm text-ink">{fmtClock(netElapsed(timer, now))}</span>
     </button>
   );
 }

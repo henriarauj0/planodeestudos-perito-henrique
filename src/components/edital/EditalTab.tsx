@@ -3,8 +3,9 @@ import { ChevronDown, ChevronsDownUp, ChevronsUpDown, Info, Search } from 'lucid
 import { DISCIPLINES, EXAM_BLOCKS } from '../../data/editalData';
 import { useStudyStore } from '../../hooks/useStudyStore';
 import { allDisciplineStats, blockQuestionStats, topicProgress, weightedProgress } from '../../lib/metrics';
-import { TONE } from '../../lib/theme';
-import { ACCURACY_CLASSES, accuracyTone, cn, fmtHours, fmtPct, toInt } from '../../lib/utils';
+import { PRIORITY_LABEL, TONE } from '../../lib/theme';
+import { cn, fmtHours, fmtPct, pad2, toInt } from '../../lib/utils';
+import { AccuracyChip } from '../ui/AccuracyChip';
 import type { Topic } from '../../types';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -16,10 +17,9 @@ import { TopicRow } from './TopicRow';
 
 type Filter = 'todos' | 'sem-teoria' | 'sem-revisao' | 'abaixo' | 'com-notas' | 'novos';
 
-const ACCENT_BG: Record<string, string> = {
-  especificos: 'bg-cyan-400',
-  basicos: 'bg-amber-400',
-  juridicos: 'bg-emerald-400',
+/** Prefixo dos códigos de tópico (etiqueta de evidência). */
+const TOPIC_CODE: Record<string, string> = {
+  ti: 'TI', crim: 'CRIM', port: 'LP', rlm: 'RLM', info: 'INF', acre: 'AC', const: 'CF', adm: 'ADM', penal: 'PEN', leg: 'LEG',
 };
 
 export function EditalTab() {
@@ -70,7 +70,7 @@ export function EditalTab() {
     <div className="space-y-4">
       <Card className="flex flex-col gap-3 p-3 lg:flex-row lg:items-center">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-dim" />
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar tópico (ex.: NTFS, crase, art. 144)…" className="pl-9" />
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -82,7 +82,7 @@ export function EditalTab() {
             <option value="com-notas">Com notas / erros</option>
             <option value="novos">Acrescentados do edital</option>
           </Select>
-          <label className="flex items-center gap-1.5 text-xs text-slate-400" title="Meta pessoal de acerto usada nos alertas">
+          <label className="flex items-center gap-1.5 text-xs text-ink-muted" title="Meta pessoal de acerto usada nos alertas">
             Meta
             <Input
               type="number"
@@ -104,7 +104,7 @@ export function EditalTab() {
       </Card>
 
       {filtering && (
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-ink-muted">
           Exibindo {visibleCount} de {totalTopics} tópicos.
         </p>
       )}
@@ -116,25 +116,28 @@ export function EditalTab() {
         const bq = blockQuestionStats(stats, block.id);
         return (
           <section key={block.id} className="space-y-2">
-            <div className="flex flex-wrap items-end justify-between gap-2 px-1">
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-2">
               <div>
-                <h2 className={cn('flex items-center gap-2 text-sm font-semibold uppercase tracking-wide', tone.text)}>
-                  <span className={cn('h-2.5 w-2.5 rounded-full', tone.dot)} />
-                  {block.name}
-                  <span className="font-normal normal-case tracking-normal text-slate-400">
-                    · {block.questions} questões · peso {block.weight} · {block.maxPoints} pontos
-                  </span>
-                </h2>
-                <p className="mt-0.5 text-[11px] text-slate-500">{block.minRule}</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-[11px] text-ink-faint">{tone.code}</span>
+                  <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-ink">{block.name}</h2>
+                  <Badge variant={block.weight === 2 ? 'solid' : 'tag'}>Peso {pad2(block.weight)}</Badge>
+                  <Badge>
+                    {block.questions} Q · {block.maxPoints} pts
+                  </Badge>
+                </div>
+                <p className="mt-1 text-[11px] text-ink-dim">{block.minRule}</p>
               </div>
-              <div className="flex items-center gap-3 text-xs text-slate-400">
-                <span>
-                  Progresso <span className="font-semibold tabular-nums text-slate-200">{fmtPct(bProg)}</span>
-                </span>
-                <span>
-                  Acerto <span className="font-semibold tabular-nums text-slate-200">{fmtPct(bq.accuracy)}</span>
-                </span>
-              </div>
+              <dl className="flex items-center gap-4 text-xs">
+                <div className="flex items-baseline gap-1.5">
+                  <dt className="label-caps">Progresso</dt>
+                  <dd className="num text-ink">{fmtPct(bProg)}</dd>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <dt className="label-caps">Acerto</dt>
+                  <dd className="num text-ink">{fmtPct(bq.accuracy)}</dd>
+                </div>
+              </dl>
             </div>
 
             {disciplines.map((d) => {
@@ -144,27 +147,32 @@ export function EditalTab() {
               const isOpen = open.has(d.id) || (filtering && visible.length > 0);
               const below = s.accuracy !== null && s.accuracy < threshold;
               return (
-                <Card key={d.id} className={cn('overflow-hidden', below && 'border-rose-500/40')}>
+                <Card key={d.id} className={cn('overflow-hidden', below && 'border-l-2 border-l-bad')}>
                   <button
                     onClick={() => toggle(d.id)}
                     aria-expanded={isOpen}
-                    className="flex w-full flex-col gap-2 p-3 text-left hover:bg-slate-800/30 sm:flex-row sm:items-center sm:gap-4"
+                    className="flex w-full flex-col gap-2 p-3 text-left hover:bg-surface-2 sm:flex-row sm:items-center sm:gap-4"
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-3">
-                      <ChevronDown className={cn('h-4 w-4 shrink-0 text-slate-500 transition-transform', isOpen && 'rotate-180')} />
+                      <ChevronDown className={cn('h-4 w-4 shrink-0 text-ink-dim transition-transform', isOpen && 'rotate-180')} />
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-medium text-slate-100">{d.name}</span>
-                          <Badge className={cn(tone.soft, tone.text, tone.ring)}>
-                            {d.questions} q × {d.weight} = {d.questions * d.weight} pts
+                          <span className="font-medium text-ink">{d.name}</span>
+                          <Badge variant="muted">{d.tag}</Badge>
+                          <Badge>
+                            {d.questions} Q × {d.weight} = {d.questions * d.weight} pts
                           </Badge>
+                          <Badge variant={d.priority === 'alta' ? 'solid' : 'tag'}>{PRIORITY_LABEL[d.priority]}</Badge>
                           {d.estimated && (
-                            <Badge title="O edital não fixa quantas das 60 questões específicas são de cada parte; valor estimado pela proporção de itens do Anexo III.">
-                              <Info className="h-3 w-3" /> estimativa
+                            <Badge
+                              variant="muted"
+                              title="O edital não fixa quantas das 60 questões específicas são de cada parte; valor estimado pela proporção de itens do Anexo III."
+                            >
+                              <Info className="h-3 w-3" /> Estimativa
                             </Badge>
                           )}
                         </div>
-                        <div className="mt-1 flex flex-wrap gap-x-3 text-[11px] text-slate-500">
+                        <div className="mt-1.5 flex flex-wrap gap-x-3 font-mono text-[11px] text-ink-dim">
                           <span>
                             T {s.theoryDone}/{s.topicsTotal}
                           </span>
@@ -185,25 +193,23 @@ export function EditalTab() {
                       <div className="w-32">
                         <Progress value={s.progress * 100} barClassName={tone.bar} label={`Progresso de ${d.name}`} />
                       </div>
-                      <span className="w-10 text-right text-xs tabular-nums text-slate-300">{fmtPct(s.progress * 100)}</span>
-                      <span className={cn('w-14 rounded-md py-1 text-center text-xs font-semibold tabular-nums ring-1', ACCURACY_CLASSES[accuracyTone(s.accuracy)])}>
-                        {fmtPct(s.accuracy)}
-                      </span>
+                      <span className="w-10 text-right text-xs font-mono tabular-nums text-ink-muted">{fmtPct(s.progress * 100)}</span>
+                      <AccuracyChip value={s.accuracy} />
                     </div>
                   </button>
                   {isOpen && (
-                    <ul className="bg-slate-950/30">
+                    <ul className="bg-canvas">
                       {(filtering ? visible : d.topics).map((t) => (
                         <TopicRow
                           key={t.id}
                           topic={t}
                           index={d.topics.indexOf(t)}
                           progress={state.topics[t.id]}
-                          accent={ACCENT_BG[block.id]}
+                          code={TOPIC_CODE[d.id] ?? d.id.toUpperCase()}
                           onOpenNotes={(topic) => setNotesTopic({ id: topic.id, title: topic.title, ref: topic.ref, disciplineName: d.name })}
                         />
                       ))}
-                      <li className="flex flex-wrap gap-x-4 gap-y-1 border-t border-slate-800/70 px-3 py-2 text-[11px] text-slate-500">
+                      <li className="flex flex-wrap gap-x-4 gap-y-1 border-t border-line px-3 py-2 text-[11px] text-ink-dim">
                         <span>Ponderação do tópico: T = 60%, R1 = 20%, R2 = 20%.</span>
                         <span>
                           Concluídos (T+R1+R2): {d.topics.filter((t) => topicProgress(state.topics[t.id]) >= 0.999).length}/{d.topics.length}

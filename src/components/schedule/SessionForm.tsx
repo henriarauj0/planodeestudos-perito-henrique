@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { DISCIPLINES, getDiscipline, trackName } from '../../data/editalData';
 import { useStudyStore } from '../../hooks/useStudyStore';
 import { toISODate } from '../../lib/dates';
-import { ACCURACY_CLASSES, accuracyTone, cn, fmtPct, pct, toInt } from '../../lib/utils';
+import { cn, pct, toInt } from '../../lib/utils';
+import { AccuracyChip } from '../ui/AccuracyChip';
 import type { StudySession } from '../../types';
 import { Button } from '../ui/button';
 import { Input, Label, Select } from '../ui/input';
@@ -117,15 +118,16 @@ export function SessionForm({ blockId, disciplineIds, defaultMinutes, mode, defa
             value={correct}
             placeholder="0"
             onChange={(e) => setCorrect(e.target.value)}
-            className={cn(invalid && 'border-rose-500')}
+            className={cn(invalid && 'border-bad')}
           />
         </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className={cn('rounded-md px-2 py-1 text-xs ring-1', ACCURACY_CLASSES[accuracyTone(acc)])}>
-          Acerto: {fmtPct(acc)}
-          {invalid && ' · certas > feitas (será limitado)'}
+        <span className="flex items-center gap-2 text-xs text-ink-dim">
+          <span className="label-caps">Acerto</span>
+          <AccuracyChip value={acc} />
+          {invalid && <span className="text-ink-muted">certas &gt; feitas (será limitado)</span>}
         </span>
         <div className="flex gap-2">
           {onCancel && (

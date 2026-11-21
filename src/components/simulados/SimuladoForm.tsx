@@ -65,21 +65,21 @@ export function SimuladoForm({ initial, defaultDate, onSave, onCancel }: Props) 
         {field('sim-e', 'Específicos (acertos /60)', esp, setEsp, 60)}
         {field('sim-d', 'Discursiva (/40)', disc, setDisc, 40, 0.5)}
       </div>
-      <div className="grid grid-cols-3 gap-2 rounded-lg bg-slate-950/60 p-3 text-center ring-1 ring-slate-800">
+      <div className="grid grid-cols-3 gap-2 rounded-md bg-canvas p-3 text-center border border-line">
         <div>
-          <div className="text-[11px] text-slate-500">Específicos ×2</div>
-          <div className="text-lg font-semibold tabular-nums text-cyan-300">{sc.especificos}/120</div>
+          <div className="text-[11px] text-ink-dim">Específicos ×2</div>
+          <div className="text-lg font-semibold font-mono tabular-nums text-ink">{sc.especificos}/120</div>
         </div>
         <div>
-          <div className="text-[11px] text-slate-500">Objetiva</div>
-          <div className={cn('text-lg font-semibold tabular-nums', sc.objetiva >= OBJECTIVE_MIN ? 'text-slate-100' : 'text-rose-300')}>{sc.objetiva}/160</div>
+          <div className="text-[11px] text-ink-dim">Objetiva</div>
+          <div className={cn('text-lg font-semibold font-mono tabular-nums', sc.objetiva >= OBJECTIVE_MIN ? 'text-ink' : 'text-ink underline decoration-bad decoration-2 underline-offset-4')}>{sc.objetiva}/160</div>
         </div>
         <div>
-          <div className="text-[11px] text-slate-500">Total</div>
-          <div className="text-lg font-semibold tabular-nums text-slate-50">{fmtNum(sc.total)}/200</div>
+          <div className="text-[11px] text-ink-dim">Total</div>
+          <div className="text-lg font-semibold font-mono tabular-nums text-ink">{fmtNum(sc.total)}/200</div>
         </div>
       </div>
-      <p className="text-[11px] text-slate-500">
+      <p className="text-[11px] text-ink-dim">
         Corte do edital: objetiva ≥ {OBJECTIVE_MIN} pontos (10.5, a) e discursiva ≥ {DISCURSIVA_MIN} pontos (11.1.2).
       </p>
       <div>

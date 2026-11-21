@@ -2,8 +2,8 @@ import { forwardRef, type InputHTMLAttributes, type LabelHTMLAttributes, type Se
 import { cn } from '../../lib/utils';
 
 const field =
-  'w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 text-sm text-slate-100 placeholder:text-slate-500 ' +
-  'focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 disabled:opacity-50';
+  'w-full rounded-md border border-line bg-canvas px-3 text-sm text-ink placeholder:text-ink-faint ' +
+  'focus:border-ink-muted focus:outline-none disabled:opacity-40';
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(function Input({ className, ...p }, ref) {
   return <input ref={ref} className={cn(field, 'h-9', className)} {...p} />;
@@ -21,5 +21,5 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
 });
 
 export function Label({ className, ...p }: LabelHTMLAttributes<HTMLLabelElement>) {
-  return <label className={cn('mb-1 block text-xs font-medium text-slate-400', className)} {...p} />;
+  return <label className={cn('mb-1.5 block font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-ink-dim', className)} {...p} />;
 }

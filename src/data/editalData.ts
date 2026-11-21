@@ -91,6 +91,8 @@ export const DISCIPLINES: Discipline[] = [
   // ===================== ESPECÍFICOS (peso 2) =====================
   {
     id: 'ti',
+    priority: 'alta',
+    tag: 'ÁREA 04 · TI',
     name: 'TI e Informática Forense',
     short: 'TI / Forense',
     block: 'especificos',
@@ -130,6 +132,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'crim',
+    priority: 'alta',
+    tag: 'COMUM · PERITOS',
     name: 'Criminalística e Medicina Legal',
     short: 'Criminalística / ML',
     block: 'especificos',
@@ -157,6 +161,8 @@ export const DISCIPLINES: Discipline[] = [
   // ===================== BÁSICOS (peso 1) =====================
   {
     id: 'port',
+    priority: 'media',
+    tag: 'LP',
     name: 'Língua Portuguesa',
     short: 'Português',
     block: 'basicos',
@@ -179,6 +185,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'rlm',
+    priority: 'media',
+    tag: 'RLM',
     name: 'Raciocínio Lógico',
     short: 'RLM',
     block: 'basicos',
@@ -199,6 +207,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'info',
+    priority: 'media',
+    tag: 'INFO BÁSICA',
     name: 'Noções de Informática',
     short: 'Informática Básica',
     block: 'basicos',
@@ -219,6 +229,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'acre',
+    priority: 'baixa',
+    tag: 'LC 345/2018',
     name: 'Realidade do Estado do Acre',
     short: 'Realidade do Acre',
     block: 'basicos',
@@ -238,6 +250,8 @@ export const DISCIPLINES: Discipline[] = [
   // ===================== JURÍDICOS (peso 1) =====================
   {
     id: 'const',
+    priority: 'revisao',
+    tag: 'CF/88',
     name: 'Noções de Direito Constitucional',
     short: 'Dir. Constitucional',
     block: 'juridicos',
@@ -253,6 +267,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'adm',
+    priority: 'revisao',
+    tag: 'DIR. ADM.',
     name: 'Noções de Direito Administrativo',
     short: 'Dir. Administrativo',
     block: 'juridicos',
@@ -270,6 +286,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'penal',
+    priority: 'revisao',
+    tag: 'CP · CPP',
     name: 'Noções de Direito Penal e Processual Penal',
     short: 'Penal / Proc. Penal',
     block: 'juridicos',
@@ -290,6 +308,8 @@ export const DISCIPLINES: Discipline[] = [
   },
   {
     id: 'leg',
+    priority: 'revisao',
+    tag: 'LC 129/2004',
     name: 'Legislação Institucional',
     short: 'Leg. Institucional',
     block: 'juridicos',

@@ -2,49 +2,20 @@ import type { BlockId } from '../types';
 
 export type Tone = BlockId | 'extra';
 
-/** Classes estáticas (Tailwind precisa enxergá-las literalmente). */
-export const TONE: Record<
-  Tone,
-  { text: string; bg: string; soft: string; ring: string; bar: string; dot: string; border: string; label: string }
-> = {
-  especificos: {
-    text: 'text-cyan-300',
-    bg: 'bg-cyan-500',
-    soft: 'bg-cyan-500/10',
-    ring: 'ring-cyan-500/30',
-    bar: 'bg-cyan-400',
-    dot: 'bg-cyan-400',
-    border: 'border-cyan-500/40',
-    label: 'Específicos · peso 2',
-  },
-  basicos: {
-    text: 'text-amber-300',
-    bg: 'bg-amber-500',
-    soft: 'bg-amber-500/10',
-    ring: 'ring-amber-500/30',
-    bar: 'bg-amber-400',
-    dot: 'bg-amber-400',
-    border: 'border-amber-500/40',
-    label: 'Básicos · peso 1',
-  },
-  juridicos: {
-    text: 'text-emerald-300',
-    bg: 'bg-emerald-500',
-    soft: 'bg-emerald-500/10',
-    ring: 'ring-emerald-500/30',
-    bar: 'bg-emerald-400',
-    dot: 'bg-emerald-400',
-    border: 'border-emerald-500/40',
-    label: 'Jurídicos · peso 1',
-  },
-  extra: {
-    text: 'text-violet-300',
-    bg: 'bg-violet-500',
-    soft: 'bg-violet-500/10',
-    ring: 'ring-violet-500/30',
-    bar: 'bg-violet-400',
-    dot: 'bg-violet-400',
-    border: 'border-violet-500/40',
-    label: 'Discursiva / Simulado',
-  },
+/**
+ * Identidade dos blocos em escala de cinza: quanto maior o peso, mais claro o traço.
+ * A identificação principal é feita por etiquetas (badges), nunca só pela cor.
+ */
+export const TONE: Record<Tone, { text: string; bar: string; dot: string; border: string; code: string; label: string }> = {
+  especificos: { text: 'text-ink', bar: 'bg-ink', dot: 'bg-ink', border: 'border-l-ink', code: 'ESP', label: 'Específicos · peso 2' },
+  basicos: { text: 'text-ink-muted', bar: 'bg-ink-muted', dot: 'bg-ink-muted', border: 'border-l-ink-muted', code: 'BAS', label: 'Básicos · peso 1' },
+  juridicos: { text: 'text-ink-muted', bar: 'bg-ink-dim', dot: 'bg-ink-dim', border: 'border-l-ink-dim', code: 'JUR', label: 'Jurídicos · peso 1' },
+  extra: { text: 'text-ink-muted', bar: 'bg-ink-faint', dot: 'bg-ink-faint', border: 'border-l-ink-faint', code: 'DSC', label: 'Discursiva / Simulado' },
 };
+
+export const PRIORITY_LABEL = {
+  alta: 'Prioridade alta',
+  media: 'Prioridade média',
+  baixa: 'Prioridade baixa',
+  revisao: 'Modo revisão',
+} as const;

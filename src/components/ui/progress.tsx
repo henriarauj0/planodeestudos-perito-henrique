@@ -18,12 +18,12 @@ export function Progress({ value, className, barClassName, marker, label }: Prop
       aria-valuemax={100}
       aria-valuenow={Math.round(v)}
       aria-label={label}
-      className={cn('relative h-1.5 w-full overflow-hidden rounded-full bg-slate-800', className)}
+      className={cn('relative h-1 w-full overflow-hidden rounded-[1px] bg-line', className)}
     >
-      <div className={cn('h-full rounded-full bg-cyan-400 transition-[width] duration-500', barClassName)} style={{ width: `${v}%` }} />
+      <div className={cn('h-full bg-ink transition-[width] duration-500', barClassName)} style={{ width: `${v}%` }} />
       {marker !== undefined && (
         <div
-          className="absolute top-0 h-full w-0.5 bg-slate-200/80"
+          className="absolute top-0 h-full w-0.5 bg-ink-muted"
           style={{ left: `calc(${Math.max(0, Math.min(100, marker))}% - 1px)` }}
           title="Esperado até hoje"
         />

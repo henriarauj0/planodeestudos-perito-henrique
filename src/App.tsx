@@ -50,24 +50,22 @@ export default function App() {
   }, [timer, now]);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(34,211,238,0.07),_transparent_55%)]">
+    <div className="min-h-screen bg-canvas">
       <div className="mx-auto max-w-[1600px] space-y-5 px-4 py-5 sm:px-6 lg:py-7">
         <Header />
         <KpiCards />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b border-line sm:flex-row sm:items-end sm:justify-between">
           <Tabs<TabId>
             value={tab}
             onChange={setTab}
             items={[
-              { id: 'cronograma', label: 'Cronograma & Timer', icon: <CalendarRange className="h-4 w-4" /> },
-              { id: 'edital', label: 'Edital Verticalizado', icon: <ClipboardList className="h-4 w-4" /> },
-              { id: 'simulados', label: 'Simulados & Discursivas', icon: <LineChart className="h-4 w-4" /> },
+              { id: 'cronograma', code: '01', label: 'Cronograma & Timer', icon: <CalendarRange className="h-4 w-4" /> },
+              { id: 'edital', code: '02', label: 'Edital Verticalizado', icon: <ClipboardList className="h-4 w-4" /> },
+              { id: 'simulados', code: '03', label: 'Simulados & Discursivas', icon: <LineChart className="h-4 w-4" /> },
             ]}
           />
-          <p className="text-[11px] text-slate-500">
-            {PROFILE.edital} · {PROFILE.banca}
-          </p>
+          <p className="label-caps hidden sm:block">Ref. {PROFILE.edital}</p>
         </div>
 
         <main role="tabpanel">
@@ -85,7 +83,7 @@ export default function App() {
           {tab === 'simulados' && <SimuladosTab />}
         </main>
 
-        <footer className="border-t border-slate-800/70 pt-4 text-[11px] leading-relaxed text-slate-500">
+        <footer className="border-t border-line pt-4 text-[11px] leading-relaxed text-ink-dim">
           Dados salvos apenas neste navegador (LocalStorage). Exporte um backup .json regularmente — limpar dados do navegador ou trocar de dispositivo apaga o
           progresso. Conteúdo programático conforme Anexo III do {PROFILE.edital}; confira retificações em idecan.org.br.
         </footer>
